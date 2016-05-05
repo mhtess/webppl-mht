@@ -1,0 +1,74 @@
+var foreach = function(lst, fn) {
+    var foreach_ = function(i) {
+        if (i < lst.length) {
+            fn(lst[i]);
+            foreach_(i + 1);
+        }
+    };
+    foreach_(0);
+};
+
+var marginalize = function(myERP, label){
+    Enumerate(function(){
+        var x = sample(myERP)
+        return x[label]
+    })
+}
+
+var dataFrame = function(d, fieldsToNumerify){
+    return map(
+        function(lst){
+            return _.object(map(function(l){
+                return _.indexOf(fieldsToNumerify, l[0]) > -1 ? 
+                            [l[0], mht.wpParseFloat(l[1])] : l
+            },
+            _.zip(d[0],lst)
+            ))
+        },
+        d.slice(1))
+}
+
+var readERP = function(file){
+    var data = mht.readCSV(file).data
+    var dataObject =  _.object(data.slice(0,data.length-1))
+    var erpList = map(
+            function(lst){
+                return map(
+                    function(i){
+                        return mht.isNumeric(i) ? mht.wpParseFloat(i) : i
+                    }, 
+                    lst)
+            },
+            _.pairs(dataObject)
+            )
+    var probs = map(last,erpList)
+    var vals = map(function(e){return most(e)[0]},erpList)
+    return Enumerate(function(){
+        return vals[discrete(probs)]
+    })
+}
+
+var readQueryERP = function(file){
+    var data = mht.readCSV(file).data
+    var dataObject =  dataFrame(data.slice(0,data.length-1))
+    var erpList = map(
+            function(obj){
+                return map(
+                    function(lst){
+                        return mht.isNumeric(lst[1]) ? mht.wpParseFloat(lst[1]) : lst[1]
+                    }, 
+                    _.pairs(obj))
+            },
+            dataObject
+            )
+    var probs = map(last,erpList)
+    var vals = map(function(e){return _.object(
+        _.zip(
+          most(_.keys(dataObject[0])),
+            most(e)
+            )
+        )},erpList)
+    return Enumerate(function(){
+        return vals[discrete(probs)]
+    })
+}

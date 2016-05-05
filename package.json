@@ -1,0 +1,13 @@
+{
+  "name": "mht",
+  "main": "mht.js",
+  "webppl": {
+    "wppl": [
+      "mht.wppl"
+    ],
+  "headers":["header.js"]
+  },
+  "dependencies": {
+    "babyparse": "^0.4.3"
+  }
+}
