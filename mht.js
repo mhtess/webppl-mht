@@ -7,13 +7,13 @@ var erpWriter = function(erp, filename, header) {
  var supp = erp.support([]);
  var csvFile = fs.openSync(filename, 'w');
  fs.writeSync(csvFile,header + ',Probability\n')
- supp.forEach(function(s) {supportWriter(s, Math.exp(erp.score([], s)), csvFile);})
+ supp.forEach(function(s) {supportWriter(s, Math.exp(erp.score(s)), csvFile);})
  fs.closeSync(csvFile);
 };
 
 var writeERP = function(erp,handle) {
    var supp = erp.support([]);
-   supp.forEach(function(s) {supportWriter(s, Math.exp(erp.score([], s)), handle);})
+   supp.forEach(function(s) {supportWriter(s, Math.exp(erp.score(s)), handle);})
 };
 
 function getTime(){
@@ -69,7 +69,7 @@ var writeLine = function(handle, line){
 var saveERP = function(erp, file) {
    var handle = openFile(file);
    var supp = erp.support([]);
-   supp.forEach(function(s) {writeLine(handle, [s, Math.exp(erp.score([], s))]);})
+   supp.forEach(function(s) {writeLine(handle, [s, Math.exp(erp.score(s))]);})
    closeFile(handle)
 };
 
