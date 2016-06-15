@@ -2,11 +2,10 @@ var fs = require('fs');
 var babyparse = require('babyparse');
 var present = require('present');
 
-
 var erpWriter = function(erp, filename, header) {
  var supp = erp.support([]);
  var csvFile = fs.openSync(filename, 'w');
- fs.writeSync(csvFile,header + ',Probability\n')
+ fs.writeSync(csvFile,header + ',prob\n')
  supp.forEach(function(s) {supportWriter(s, Math.exp(erp.score(s)), csvFile);})
  fs.closeSync(csvFile);
 };
@@ -73,6 +72,19 @@ var saveERP = function(erp, file) {
    closeFile(handle)
 };
 
+var closest = function (num, arr) {
+    var curr = arr[0];
+    var diff = Math.abs (num - curr);
+    for (var val = 0; val < arr.length; val++) {
+        var newdiff = Math.abs (num - arr[val]);
+        if (newdiff < diff) {
+            diff = newdiff;
+            curr = arr[val];
+        }
+    }
+    return curr;
+}
+
 module.exports = {
   readCSV: readCSV,
   wpParseFloat: wpParseFloat,
@@ -84,5 +96,6 @@ module.exports = {
   closeFile: closeFile,
   writeLine: writeLine,
   writeERP:writeERP,
-  saveERP:saveERP
+  saveERP:saveERP,
+  closest:closest
 };
